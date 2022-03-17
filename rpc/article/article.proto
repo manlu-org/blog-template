@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package article;
+
+message Reply {
+  int32 id = 1;
+  string content = 2;
+}
+
+message Post {
+  int32 id = 1;
+  string title = 2;
+  string content = 3;
+  repeated Reply replies = 4;
+}
+
+message Meta {
+  int32 page = 1;
+  int32 page_size = 2;
+  int32 total = 3;
+}
+
+message GetAllArticleReq {
+  int32 page = 1;
+  int32 page_size = 2;
+}
+
+message GetAllArticleResp {
+  repeated Post posts = 1;
+  Meta meta = 2;
+}
+
+message GetArticleReq {
+  int32 id = 1;
+}
+
+message GetArticleResp {
+  Post post = 1;
+}
+
+message CreateArticleReq {
+  string title = 1;
+  string content = 2;
+}
+
+message CreateArticleResp {
+  bool success = 1;
+  string message = 2;
+}
+
+service article {
+  // 获取全部文章
+  rpc GetAllArticle(GetAllArticleReq) returns (GetAllArticleResp);
+  // 获取文章详情
+  rpc GetArticle(GetArticleReq) returns (GetArticleResp);
+  // 创建文章
+  rpc CreateArticle(CreateArticleReq) returns (CreateArticleResp);
+}

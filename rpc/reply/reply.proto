@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package reply;
+
+message CreateReplyReq {
+  int64 post_id = 1;
+  string content = 2;
+}
+
+message CreateReplyResp {
+  bool success = 1;
+}
+
+message GetRepliesReq {
+  int64 post_id = 1;
+}
+
+message ReplyInfo {
+  int64 id = 1;
+  string content = 2;
+}
+
+message GetRepliesResp {
+  repeated ReplyInfo list = 1;
+}
+
+service reply {
+  rpc CreateReply(CreateReplyReq) returns (CreateReplyResp);
+  rpc GetReplies(GetRepliesReq) returns (GetRepliesResp);
+}

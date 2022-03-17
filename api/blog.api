@@ -1,0 +1,102 @@
+syntax = "v1"
+
+info(
+	author: "sllt"
+	version: "0.1"
+)
+
+type (
+	Post {
+		Id      int64  `json:"id"`
+		Title   string `json:"title"`
+		Content string `json:"content"`
+	}
+	Meta {
+		Total    int64 `json:"total"`
+		Page     int64 `json:"page"`
+		PageSize int64 `json:"page_size"`
+	}
+)
+
+type (
+	postListReq {
+		Page     int64 `form:"page,optional"`
+		PageSize int64 `form:"pageSize,optional"`
+	}
+	postListResp {
+		Post []*Post `json:"post"`
+		Meta *Meta   `json:"meta"`
+	}
+)
+
+type (
+	postDetailReq {
+		Id int64 `path:"id"`
+	}
+	postDetailResp {
+		Id        int64    `json:"id"`
+		Title     string   `json:"title"`
+		Content   string   `json:"content"`
+		ReplyList []*Reply `json:"replies"`
+	}
+)
+
+type (
+	createPostReq {
+		Title   string `json:"title"`
+		Content string `json:"content"`
+	}
+	createPostResp {
+		Success bool `json:"success"`
+	}
+)
+
+type (
+	createReplyReq {
+		PostID  int64  `path:"id"`
+		Content string `form:"content"`
+	}
+
+	createReplyResp {
+		Success bool `json:"success"`
+	}
+)
+
+type (
+	getReplyReq {
+		PostID int64 `path:"id"`
+	}
+	Reply {
+		Id      int64  `json:"id"`
+		Content string `json:"content"`
+	}
+	getReplyResp {
+		List []*Reply `json:"list"`
+	}
+)
+
+@server (
+	group: article
+)
+service blog {
+	@handler PostsHandler
+	get /posts (postListReq) returns (postListResp)
+	
+	@handler PostDetailHandler
+	get /post/:id(postDetailReq) returns (postDetailResp)
+	
+	@handler CreatePostHandler
+	post /post/create (createPostReq) returns (createPostResp)
+	
+}
+
+@server (
+	group: reply
+)
+service blog {
+	@handler CreateReplyHandler
+	post /post/:id/reply(createReplyReq) returns (createReplyResp);
+	
+	@handler GetReplyHandler
+	get /post/:id/replies(getReplyReq) returns (getReplyResp);
+
